@@ -1,0 +1,9 @@
+node_modules/
+data.json
+server.js
+server.log
+server.pid
+server.port
+start.sh
+package.json
+package-lock.json
