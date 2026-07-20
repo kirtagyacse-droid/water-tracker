@@ -131,41 +131,34 @@ function cycleQuote() {
   elMotivationalQuote.innerHTML = `Welcome back KT, <span class="quote-highlight">"${QUOTES[currentQuoteIndex]}"</span>`;
 }
 
-// Seed historical water logs to prevent data loss
-const INITIAL_WATER_DATA = {
-  "2026-07-12": 1800,
-  "2026-07-13": 2040,
-  "2026-07-14": 2500,
-  "2026-07-15": 2750,
-  "2026-07-16": 2500,
-  "2026-07-17": 3000,
-  "2026-07-19": 1750
-};
-
-// API: Fetch Logs from LocalStorage
+// API: Fetch Logs from Server
 async function loadData() {
   try {
-    const localData = localStorage.getItem('water_tracker_data');
-    if (localData) {
-      STATE.db = JSON.parse(localData);
-    } else {
-      STATE.db = INITIAL_WATER_DATA;
-      localStorage.setItem('water_tracker_data', JSON.stringify(INITIAL_WATER_DATA));
+    const response = await fetch('/api/water');
+    const result = await response.json();
+    if (result.success) {
+      STATE.db = result.data;
     }
   } catch (err) {
-    console.error('Error fetching water logs from local storage:', err);
-    STATE.db = INITIAL_WATER_DATA;
+    console.error('Error fetching water logs:', err);
   }
 }
 
-// API: Save Logs to LocalStorage
+// API: Save Logs to Server
 async function saveWater(dateString, newAmount) {
   try {
-    STATE.db[dateString] = newAmount;
-    localStorage.setItem('water_tracker_data', JSON.stringify(STATE.db));
-    updateUI();
+    const response = await fetch('/api/water', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ date: dateString, amount: newAmount })
+    });
+    const result = await response.json();
+    if (result.success) {
+      STATE.db = result.data;
+      updateUI();
+    }
   } catch (err) {
-    console.error('Error saving water log to local storage:', err);
+    console.error('Error saving water log:', err);
   }
 }
 

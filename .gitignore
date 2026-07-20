@@ -5,5 +5,3 @@ server.log
 server.pid
 server.port
 start.sh
-package.json
-package-lock.json

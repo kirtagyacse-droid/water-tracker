@@ -1,6 +1,7 @@
 {
   "cleanUrls": true,
   "rewrites": [
+    { "source": "/api/water", "destination": "/api/water.js" },
     { "source": "/(.*)", "destination": "/public/$1" }
   ]
 }
